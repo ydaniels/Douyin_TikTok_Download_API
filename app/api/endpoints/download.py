@@ -9,9 +9,19 @@ from starlette.responses import FileResponse
 
 from app.api.models.APIResponseModel import ErrorResponseModel  # 导入响应模型
 from crawlers.hybrid.hybrid_crawler import HybridCrawler  # 导入混合数据爬虫
-
+import traceback
 router = APIRouter()
 HybridCrawler = HybridCrawler()
+
+
+def cookies_to_dict(cookie_str):
+    if not cookie_str:
+        return {}
+    d = {}
+    for cook in cookie_str.split(';'):
+        k, v = cook.split('=', 1)
+        d[k.strip()] = v.strip()
+    return d
 
 # 读取上级再上级目录的配置文件
 config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'config.yaml')
@@ -19,12 +29,17 @@ with open(config_path, 'r', encoding='utf-8') as file:
     config = yaml.safe_load(file)
 
 
+
+
 async def fetch_data(url: str, headers: dict = None):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     } if headers is None else headers.get('headers')
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url, headers=headers)
+    cook = cookies_to_dict(headers.get('Cookie'))
+    print(cook)
+    async with httpx.AsyncClient(cookies=cook, proxies=headers.pop('proxies', {})) as client:
+        print('Fetching data from ' + url)
+        response = await client.get(url, headers=headers,  )
         response.raise_for_status()  # 确保响应是成功的
         return response
 
@@ -76,14 +91,15 @@ async def download_file_hybrid(request: Request,
     # 开始解析数据/Start parsing data
     try:
         if cookies:
-            cookies = base64.b64decode(cookies)
+            cookies = base64.b64decode(cookies).decode()
         if proxy:
-            proxy = base64.b64decode(proxy)
+            proxy = base64.b64decode(proxy).decode()
         if user_agent:
-            user_agent = base64.b64decode(user_agent)
+            user_agent = base64.b64decode(user_agent).decode()
         data = await HybridCrawler.hybrid_parsing_single_video(url, minimal=True)
     except Exception as e:
         code = 400
+        print(traceback.format_exc())
         return ErrorResponseModel(code=code, message=str(e), router=request.url.path, params=dict(request.query_params))
 
     # 开始下载文件/Start downloading files
@@ -168,4 +184,5 @@ async def download_file_hybrid(request: Request,
     except Exception as e:
         print(e)
         code = 400
+        print(traceback.format_exc())
         return ErrorResponseModel(code=code, message=str(e), router=request.url.path, params=dict(request.query_params))
