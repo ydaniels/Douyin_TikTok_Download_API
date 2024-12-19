@@ -1,5 +1,6 @@
 import base64
 from typing import List
+import traceback
 
 from fastapi import APIRouter, Query, Body, Request, HTTPException  # 导入FastAPI组件
 
@@ -149,6 +150,7 @@ async def fetch_user_post(request: Request,
                              router=request.url.path,
                              data=data)
     except Exception as e:
+        print(traceback.format_exc())
         status_code = 400
         detail = ErrorResponseModel(code=status_code,
                                     router=request.url.path,
@@ -757,6 +759,7 @@ async def get_sec_user_id(request: Request,
                              router=request.url.path,
                              data=data)
     except Exception as e:
+        print(traceback.format_exc())
         status_code = 400
         detail = ErrorResponseModel(code=status_code,
                                     router=request.url.path,
