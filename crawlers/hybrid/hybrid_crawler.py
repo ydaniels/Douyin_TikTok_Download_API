@@ -161,9 +161,11 @@ class HybridCrawler:
         # TikTok数据处理/TikTok data processing
         elif platform == 'tiktok':
             # TikTok视频数据处理/TikTok video data processing
+            print(data)
             if url_type == 'video':
                 # 将信息储存在字典中/Store information in a dictionary
                 # wm_video = data['video']['downloadAddr']
+
                 wm_video = data['video']['download_addr']['url_list'][0]
                 api_data = {
                     'video_data':
