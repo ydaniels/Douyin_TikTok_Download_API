@@ -116,8 +116,8 @@ async def download_file_hybrid(request: Request,
                 __headers["headers"]["User-Agent"] = user_agent
             proxies = None
             if proxy:
-                __headers["headers"]["proxies"]["http://"] = proxy
-                __headers["headers"]["proxies"]["https://"] = proxy
+                __headers["proxies"]["http://"] = proxy
+                __headers["proxies"]["https://"] = proxy
                 #proxies = __headers["headers"]["proxies"]
             response = await fetch_data(url, headers=__headers)
 

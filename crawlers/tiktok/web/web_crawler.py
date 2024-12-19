@@ -137,9 +137,9 @@ class TikTokWebCrawler:
             kwargs["headers"]["User-Agent"] = user_agent
         proxies = None
         if proxy:
-            kwargs["headers"]["proxies"]["http://"] = proxy
-            kwargs["headers"]["proxies"]["https://"] = proxy
-            proxies = kwargs["headers"]["proxies"]
+            kwargs["proxies"]["http://"] = proxy
+            kwargs["proxies"]["https://"] = proxy
+            proxies = kwargs["proxies"]
         # proxies = {"http://": 'http://43.159.29.191:24144', "https://": 'http://43.159.29.191:24144'}
         # 创建一个基础爬虫
         base_crawler = BaseCrawler(proxies=proxies, crawler_headers=kwargs["headers"])
@@ -180,9 +180,9 @@ class TikTokWebCrawler:
             kwargs["headers"]["User-Agent"] = user_agent
         proxies = None
         if proxy:
-            kwargs["headers"]["proxies"]["http://"] = proxy
-            kwargs["headers"]["proxies"]["https://"] = proxy
-            proxies = kwargs["headers"]["proxies"]
+            kwargs["proxies"]["http://"] = proxy
+            kwargs["proxies"]["https://"] = proxy
+            proxies = kwargs["proxies"]
         # 创建一个基础爬虫
         base_crawler = BaseCrawler(proxies=proxies, crawler_headers=kwargs["headers"])
         async with base_crawler as crawler:
