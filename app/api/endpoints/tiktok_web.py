@@ -754,7 +754,7 @@ async def get_sec_user_id(request: Request,
             proxy = base64.b64decode(proxy)
         if user_agent:
             user_agent = base64.b64decode(user_agent)
-        data = await TikTokWebCrawler.get_sec_user_id(url, cookies=cookies, proxy=proxy, user_agent=user_agent)
+        data = await TikTokWebCrawler.get_sec_user_id(url)#, cookies=cookies, proxy=proxy, user_agent=user_agent)
         return ResponseModel(code=200,
                              router=request.url.path,
                              data=data)
