@@ -75,7 +75,11 @@ class BaseCrawler:
 
         # 爬虫请求头 / Crawler request header
         self.crawler_headers = crawler_headers or {}
-
+        cookies = self.crawler_headers.get('Cookie')
+        self.cookies_dict = {}
+        if cookies:
+            self.cookies_dict = self.cookies_to_dict(cookies)
+            print(self.cookies_dict)
         # 异步的任务数 / Number of asynchronous tasks
         self._max_tasks = max_tasks
         self.semaphore = asyncio.Semaphore(max_tasks)
@@ -93,13 +97,24 @@ class BaseCrawler:
         self._timeout = timeout
         self.timeout = httpx.Timeout(timeout)
         # 异步客户端 / Asynchronous client
+        print(self.proxies)
         self.aclient = httpx.AsyncClient(
             headers=self.crawler_headers,
             proxies=self.proxies,
             timeout=self.timeout,
             limits=self.limits,
+            cookies=self.cookies_dict,
             transport=self.atransport,
         )
+    async def cookies_to_dict(self, cookie_str):
+            if not cookie_str:
+                return {}
+            d = {}
+            for cook in cookie_str.split(';'):
+
+                k, v = cook.split('=', 1)
+                d[k.strip()] = v.strip()
+            return d
 
     async def fetch_response(self, endpoint: str) -> Response:
         """获取数据 (Get data)
