@@ -1,6 +1,6 @@
 import os
 import zipfile
-
+import base64
 import aiofiles
 import httpx
 import yaml
@@ -35,7 +35,7 @@ async def download_file_hybrid(request: Request,
                                    example="https://www.douyin.com/video/7372484719365098803",
                                    description="视频或图片的URL地址，也支持抖音|TikTok的分享链接，例如：https://v.douyin.com/e4J8Q7A/"),
                                prefix: bool = True,
-                               with_watermark: bool = False):
+                               with_watermark: bool = False,  cookies: str=Query(default=None, description=""), proxy: str=Query(default=None, description=""), user_agent: str=Query(default=None, description="")):
     """
     # [中文]
     ### 用途:
@@ -75,6 +75,12 @@ async def download_file_hybrid(request: Request,
 
     # 开始解析数据/Start parsing data
     try:
+        if cookies:
+            cookies = base64.b64decode(cookies)
+        if proxy:
+            proxy = base64.b64decode(proxy)
+        if user_agent:
+            user_agent = base64.b64decode(user_agent)
         data = await HybridCrawler.hybrid_parsing_single_video(url, minimal=True)
     except Exception as e:
         code = 400
@@ -104,6 +110,15 @@ async def download_file_hybrid(request: Request,
 
             # 获取视频文件
             __headers = await HybridCrawler.TikTokWebCrawler.get_tiktok_headers() if platform == 'tiktok' else await HybridCrawler.DouyinWebCrawler.get_douyin_headers()
+            if cookies:
+                __headers["headers"]["Cookie"] = cookies
+            if user_agent:
+                __headers["headers"]["User-Agent"] = user_agent
+            proxies = None
+            if proxy:
+                __headers["headers"]["proxies"]["http://"] = proxy
+                __headers["headers"]["proxies"]["https://"] = proxy
+                #proxies = __headers["headers"]["proxies"]
             response = await fetch_data(url, headers=__headers)
 
             # 保存文件

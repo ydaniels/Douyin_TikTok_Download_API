@@ -20,8 +20,8 @@ WORKDIR /app
 COPY . /app
 
 # Install pip and set the PyPI mirror (Aliyun)
-RUN pip3 install -i https://mirrors.aliyun.com/pypi/simple/ -U pip \
-    && pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/
+#RUN pip3 install -i https://mirrors.aliyun.com/pypi/simple/ -U pip \
+#    && pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 
 # Install dependencies directly
 RUN pip3 install --no-cache-dir -r requirements.txt

@@ -128,12 +128,21 @@ class TikTokWebCrawler:
         return response
 
     # 获取用户的作品列表
-    async def fetch_user_post(self, secUid: str, cursor: int = 0, count: int = 35, coverFormat: int = 2):
+    async def fetch_user_post(self, secUid: str, cursor: int = 0, count: int = 35, coverFormat: int = 2, cookies=None, proxy=None, user_agent=None):
         # 获取TikTok的实时Cookie
         kwargs = await self.get_tiktok_headers()
+        if cookies:
+            kwargs["headers"]["Cookie"] = cookies
+        if user_agent:
+            kwargs["headers"]["User-Agent"] = user_agent
+        proxies = None
+        if proxy:
+            kwargs["headers"]["proxies"]["http://"] = proxy
+            kwargs["headers"]["proxies"]["https://"] = proxy
+            proxies = kwargs["headers"]["proxies"]
         # proxies = {"http://": 'http://43.159.29.191:24144', "https://": 'http://43.159.29.191:24144'}
         # 创建一个基础爬虫
-        base_crawler = BaseCrawler(proxies=None, crawler_headers=kwargs["headers"])
+        base_crawler = BaseCrawler(proxies=proxies, crawler_headers=kwargs["headers"])
         async with base_crawler as crawler:
             # 创建一个用户作品的BaseModel参数
             params = UserPost(secUid=secUid, cursor=cursor, count=count, coverFormat=coverFormat)
@@ -161,16 +170,24 @@ class TikTokWebCrawler:
         return response
 
     # 获取用户的收藏列表
-    async def fetch_user_collect(self, cookie: str, secUid: str, cursor: int = 0, count: int = 30,
-                                 coverFormat: int = 2):
+    async def fetch_user_collect(self, secUid: str, cursor: int = 0, count: int = 30,
+                                 coverFormat: int = 2,  cookies=None, proxy=None, user_agent=None):
         # 获取TikTok的实时Cookie
         kwargs = await self.get_tiktok_headers()
-        kwargs["headers"]["Cookie"] = cookie
+        if cookies:
+            kwargs["headers"]["Cookie"] = cookies
+        if user_agent:
+            kwargs["headers"]["User-Agent"] = user_agent
+        proxies = None
+        if proxy:
+            kwargs["headers"]["proxies"]["http://"] = proxy
+            kwargs["headers"]["proxies"]["https://"] = proxy
+            proxies = kwargs["headers"]["proxies"]
         # 创建一个基础爬虫
-        base_crawler = BaseCrawler(proxies=kwargs["proxies"], crawler_headers=kwargs["headers"])
+        base_crawler = BaseCrawler(proxies=proxies, crawler_headers=kwargs["headers"])
         async with base_crawler as crawler:
             # 创建一个用户收藏的BaseModel参数
-            params = UserCollect(cookie=cookie, secUid=secUid, cursor=cursor, count=count, coverFormat=coverFormat)
+            params = UserCollect(cookie=cookies, secUid=secUid, cursor=cursor, count=count, coverFormat=coverFormat)
             # 生成一个用户收藏的带有加密参数的Endpoint
             endpoint = BogusManager.model_2_endpoint(
                 TikTokAPIEndpoints.USER_COLLECT, params.dict(), kwargs["headers"]["User-Agent"]

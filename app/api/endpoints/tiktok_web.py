@@ -1,3 +1,4 @@
+import base64
 from typing import List
 
 from fastapi import APIRouter, Query, Body, Request, HTTPException  # 导入FastAPI组件
@@ -105,7 +106,8 @@ async def fetch_user_post(request: Request,
                                               description="用户secUid/User secUid"),
                           cursor: int = Query(default=0, description="翻页游标/Page cursor"),
                           count: int = Query(default=35, description="每页数量/Number per page"),
-                          coverFormat: int = Query(default=2, description="封面格式/Cover format")):
+                          coverFormat: int = Query(default=2, description="封面格式/Cover format"),
+                          cookies: str=Query(default=None, description=""), proxy: str=Query(default=None, description=""), user_agent: str=Query(default=None, description="")):
     """
     # [中文]
     ### 用途:
@@ -136,7 +138,13 @@ async def fetch_user_post(request: Request,
     coverFormat = 2
     """
     try:
-        data = await TikTokWebCrawler.fetch_user_post(secUid, cursor, count, coverFormat)
+        if cookies:
+            cookies = base64.b64decode(cookies)
+        if proxy:
+            proxy = base64.b64decode(proxy)
+        if user_agent:
+            user_agent = base64.b64decode(user_agent)
+        data = await TikTokWebCrawler.fetch_user_post(secUid, cursor, count, coverFormat, cookies=cookies, proxy=proxy, user_agent=user_agent)
         return ResponseModel(code=200,
                              router=request.url.path,
                              data=data)
@@ -214,7 +222,7 @@ async def fetch_user_collect(request: Request,
                              secUid: str = Query(example="Your_SecUid", description="用户secUid/User secUid"),
                              cursor: int = Query(default=0, description="翻页游标/Page cursor"),
                              count: int = Query(default=30, description="每页数量/Number per page"),
-                             coverFormat: int = Query(default=2, description="封面格式/Cover format")):
+                             coverFormat: int = Query(default=2, description="封面格式/Cover format"), cookies: str=Query(default=None, description=""), proxy: str=Query(default=None, description=""), user_agent: str=Query(default=None, description="")):
     """
     # [中文]
     ### 用途:
@@ -250,7 +258,14 @@ async def fetch_user_collect(request: Request,
     coverFormat = 2
     """
     try:
-        data = await TikTokWebCrawler.fetch_user_collect(cookie, secUid, cursor, count, coverFormat)
+        if cookies:
+            cookies = base64.b64decode(cookies)
+        if proxy:
+            proxy = base64.b64decode(proxy)
+        if user_agent:
+            user_agent = base64.b64decode(user_agent)
+
+        data = await TikTokWebCrawler.fetch_user_collect(cookie, secUid, cursor, count, coverFormat, cookies=cookies, proxy=proxy, user_agent=user_agent)
         return ResponseModel(code=200,
                              router=request.url.path,
                              data=data)
@@ -706,7 +721,10 @@ async def generate_xbogus(request: Request,
 async def get_sec_user_id(request: Request,
                           url: str = Query(
                               example="https://www.tiktok.com/@tiktok",
-                              description="用户主页链接/User homepage link")):
+                              description="用户主页链接/User homepage link"),
+                          cookies: str=Query(default=None, description=""),
+                          proxy: str=Query(default=None, description=""),
+                          user_agent: str=Query(default=None, description="")):
     """
     # [中文]
     ### 用途:
@@ -728,7 +746,13 @@ async def get_sec_user_id(request: Request,
     url = "https://www.tiktok.com/@tiktok"
     """
     try:
-        data = await TikTokWebCrawler.get_sec_user_id(url)
+        if cookies:
+            cookies = base64.b64decode(cookies)
+        if proxy:
+            proxy = base64.b64decode(proxy)
+        if user_agent:
+            user_agent = base64.b64decode(user_agent)
+        data = await TikTokWebCrawler.get_sec_user_id(url, cookies=cookies, proxy=proxy, user_agent=user_agent)
         return ResponseModel(code=200,
                              router=request.url.path,
                              data=data)

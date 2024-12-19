@@ -116,7 +116,7 @@ class BaseCrawler:
         """获取 JSON 数据 (Get JSON data)
 
         Args:
-            endpoint (str): 接口地址 (Endpoint URL)
+            endpoint (str): 接口地址 (Endpoint URL)get_fetch_dataget_fetch_data
 
         Returns:
             dict: 解析后的JSON数据 (Parsed JSON data)
