@@ -165,12 +165,13 @@ class HybridCrawler:
             if url_type == 'video':
                 # 将信息储存在字典中/Store information in a dictionary
                 # wm_video = data['video']['downloadAddr']
-                if 'download_addr' in data['video']:
+                if 'play_addr_h264' in data['video']:
+                    wm_video = data['video']['play_addr_h264']['url_list'][0]
+                elif 'download_addr' in data['video']:
                     wm_video = data['video']['download_addr']['url_list'][0]
                 elif 'downloadAddr' in data['video']:
                     wm_video = data['video']['downloadAddr']['url_list'][0]
-                elif 'play_addr_h264' in data['video']:
-                    wm_video = data['video']['play_addr_h264']['url_list'][0]
+
                 elif 'play_addr' in data['video']:
                     wm_video = data['video']['play_addr']['url_list'][0]
                 elif 'playAddr' in data['video']:
