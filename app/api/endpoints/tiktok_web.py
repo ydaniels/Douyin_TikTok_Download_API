@@ -140,11 +140,11 @@ async def fetch_user_post(request: Request,
     """
     try:
         if cookies:
-            cookies = base64.b64decode(cookies)
+            cookies = base64.b64decode(cookies).decode()
         if proxy:
-            proxy = base64.b64decode(proxy)
+            proxy = base64.b64decode(proxy).decode()
         if user_agent:
-            user_agent = base64.b64decode(user_agent)
+            user_agent = base64.b64decode(user_agent).decode()
         data = await TikTokWebCrawler.fetch_user_post(secUid, cursor, count, coverFormat, cookies=cookies, proxy=proxy, user_agent=user_agent)
         return ResponseModel(code=200,
                              router=request.url.path,
@@ -261,11 +261,11 @@ async def fetch_user_collect(request: Request,
     """
     try:
         if cookies:
-            cookies = base64.b64decode(cookies)
+            cookies = base64.b64decode(cookies).decode()
         if proxy:
-            proxy = base64.b64decode(proxy)
+            proxy = base64.b64decode(proxy).decode()
         if user_agent:
-            user_agent = base64.b64decode(user_agent)
+            user_agent = base64.b64decode(user_agent).decode()
 
         data = await TikTokWebCrawler.fetch_user_collect(cookie, secUid, cursor, count, coverFormat, cookies=cookies, proxy=proxy, user_agent=user_agent)
         return ResponseModel(code=200,
@@ -749,11 +749,11 @@ async def get_sec_user_id(request: Request,
     """
     try:
         if cookies:
-            cookies = base64.b64decode(cookies)
+            cookies = base64.b64decode(cookies).decode()
         if proxy:
-            proxy = base64.b64decode(proxy)
+            proxy = base64.b64decode(proxy).decode()
         if user_agent:
-            user_agent = base64.b64decode(user_agent)
+            user_agent = base64.b64decode(user_agent).decode()
         data = await TikTokWebCrawler.get_sec_user_id(url)#, cookies=cookies, proxy=proxy, user_agent=user_agent)
         return ResponseModel(code=200,
                              router=request.url.path,
