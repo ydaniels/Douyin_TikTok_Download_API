@@ -78,7 +78,7 @@ class BaseCrawler:
         cookies = self.crawler_headers.get('Cookie')
         self.cookies_dict = {}
         if cookies:
-            self.cookies_dict = self.cookies_to_dict(cookies)
+            self.cookies_dict =  self.cookies_to_dict(cookies)
             print(self.cookies_dict)
         # 异步的任务数 / Number of asynchronous tasks
         self._max_tasks = max_tasks
@@ -106,7 +106,7 @@ class BaseCrawler:
             cookies=self.cookies_dict,
             transport=self.atransport,
         )
-    async def cookies_to_dict(self, cookie_str):
+    def cookies_to_dict(self, cookie_str):
             if not cookie_str:
                 return {}
             d = {}
